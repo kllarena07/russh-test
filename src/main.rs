@@ -115,6 +115,7 @@ impl AppServer {
             }
         });
 
+        println!("Starting SSH server on port 2222...");
         let config = Config {
             inactivity_timeout: Some(std::time::Duration::from_secs(3600)),
             auth_rejection_time: std::time::Duration::from_secs(3),
@@ -127,7 +128,7 @@ impl AppServer {
             ..Default::default()
         };
 
-        self.run_on_address(Arc::new(config), ("0.0.0.0", 22))
+        self.run_on_address(Arc::new(config), ("0.0.0.0", 2222))
             .await?;
         Ok(())
     }
