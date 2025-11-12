@@ -127,7 +127,7 @@ impl AppServer {
             ..Default::default()
         };
 
-        self.run_on_address(Arc::new(config), ("0.0.0.0", 2222))
+        self.run_on_address(Arc::new(config), ("0.0.0.0", 22))
             .await?;
         Ok(())
     }
