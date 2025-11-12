@@ -1,7 +1,0 @@
-services:
-  portfolio:
-    build: .
-    ports:
-      - "2222:2222"
-    volumes: []
-    restart: unless-stopped
