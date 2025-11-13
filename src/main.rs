@@ -7,9 +7,9 @@ use ratatui::layout::Rect;
 use ratatui::style::{Color, Style};
 use ratatui::widgets::{Block, Borders, Clear, Paragraph};
 use ratatui::{Terminal, TerminalOptions, Viewport};
-use russh::keys::ssh_key::PublicKey;
-use russh::server::*;
+// use russh::keys::ssh_key::PublicKey;
 use russh::{Channel, ChannelId, Pty};
+use russh::{MethodKind, MethodSet, server::*};
 use tokio::sync::Mutex;
 use tokio::sync::mpsc::{UnboundedSender, unbounded_channel};
 
@@ -115,11 +115,15 @@ impl AppServer {
             }
         });
 
+        let mut methods = MethodSet::empty();
+        methods.push(MethodKind::None);
+
         println!("Starting SSH server on port 22...");
         let config = Config {
             inactivity_timeout: Some(std::time::Duration::from_secs(3600)),
             auth_rejection_time: std::time::Duration::from_secs(3),
             auth_rejection_time_initial: Some(std::time::Duration::from_secs(0)),
+            methods,
             keys: vec![
                 russh::keys::PrivateKey::random(&mut OsRng, russh::keys::Algorithm::Ed25519)
                     .unwrap(),
@@ -169,7 +173,8 @@ impl Handler for AppServer {
         Ok(true)
     }
 
-    async fn auth_publickey(&mut self, _: &str, _: &PublicKey) -> Result<Auth, Self::Error> {
+    async fn auth_none(&mut self, _: &str) -> Result<Auth, Self::Error> {
+        // Accept any user without authentication
         Ok(Auth::Accept)
     }
 
